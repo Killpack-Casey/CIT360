@@ -1,5 +1,3 @@
-
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -19,7 +17,6 @@ public class treeInterface {
 		//TreeSet's are also not indexed unlike a list
 		TreeSet<Integer> myTree = new TreeSet<Integer>();
 		List<Integer> myArrayList = new ArrayList<Integer>();
-		//Collections.reverseOrder(new TreeSet);
 		
 		//Add integers to treeSet
 		myTree.add(3);
@@ -72,10 +69,16 @@ public class treeInterface {
 		
 			//Print out True if the number is found in the set or false if not found
 		    //Good code for finding elements quick
-			System.out.println(myTree.contains(5));
+			System.out.println("-----------------------------------------------------------------------------------");
+		    System.out.println("Happy Path: check to see if treeSet has the number five. This is good code "
+		    		+ "for searching for an element quickly");
+			System.out.println("Return true if found: " + myTree.contains(5));
+			System.out.println("-----------------------------------------------------------------------------------");
 			
 			//Print out True if the number is found in the set or false if not found
 			//Bad cod for finding elements much slower than a treeset
+			System.out.println("Nasty Path: check to see if ArrayList has the number five. This is bad code "
+		    		+ "for searching for an element, not as quick as searching with a treeSet");
 			for (int i = 0; i < myArrayList.size(); i++){
 				if(myArrayList.get(i) == 5){
 					break;
@@ -84,55 +87,40 @@ public class treeInterface {
 				else
 					continue;
 					
-	}System.out.println("true");
+	}System.out.println("Return true if found: true");
+	System.out.println("-----------------------------------------------------------------------------------");
 }
 	
 	public static void testTree(TreeSet<Integer> myTree, List<Integer> myArrayList){
-	
-		//create a TreeSet to hold the reverse values
-		TreeSet<Integer> tReverse = new TreeSet<Integer>();
 		
-		//nasty path: Cannot reverse the order of a TreeSet doing it this way 
-		//Collections.reverseOrder(myTree);
-		
-		//nasty path: Cannot do the reverse order of a TreeSet using a Comparator
-		//Comparator<Integer> compare = Collections.reverseOrder(null);
-		//Collections.sort(myTree, compare);
-		
-		System.out.println();
-		System.out.println("Loop thorugh array list in reverse order");
-	
-		//happy path: Reverse the order of a list using a comparator
-		Comparator<Integer> compare2 = Collections.reverseOrder(null);
-		Collections.sort(myArrayList, compare2);
-		
-		for (int i = 0; i < myArrayList.size(); i++){
-			System.out.println(myArrayList.get(i));
-		}
-	
-		System.out.println();
-		System.out.println("Loop through my Tree Set in reverse order");
-		
-		//happy path: Reverse the order of myTree and put it in the tReverse treeSet
-		tReverse = (TreeSet<Integer>)myTree.descendingSet();
-		
-		//create an iterator and store treeSet in it
-		Iterator<Integer> it;
-		it = tReverse.iterator();
-		
-		//loop through the treeSet
-		while (it.hasNext()){
-			   System.out.println(it.next() + " ");}
-		
-		System.out.println();
-		
-		//nasty path
+		//nasty path: add null to a treeSet
 		try{
-			myTree.remove(null);
+			myTree.add(null);
 		}
 		catch(Exception e){
-			System.out.println("This will create a NULL POINTER EXCEPTION error");
+			System.out.println("Nasty Path: cannot add null to a treeSet");
 		}
+		System.out.println("-----------------------------------------------------------------------------------");
+		
+		//nasty path: add a string to a treeSet of integer type
+		try{
+			//myTree.add("Test");
+			System.out.println("Nasty Path: cannot add a string to a treeSet of integer type");
+		}
+		catch(Exception e){
+			System.out.println("Nasty Path: cannot add a string to a treeSet of integer type");
+		}
+		System.out.println("-----------------------------------------------------------------------------------");
+		
+		//nasty path: remove non-existent value from treeSet
+		try{
+			myTree.remove(30);
+			System.out.println("Nasty Path: remove non-existent value from treeSet");
+		}
+		catch(Exception e){
+			System.out.println("Nasty Path: remove non-existent value from treeSet");
+		}
+		System.out.println("-----------------------------------------------------------------------------------");
 			
 	}
 }

@@ -1,5 +1,3 @@
-
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -18,6 +16,9 @@ public class listInterface {
 		
 		//Declare an ArrayList of Integer types
 		List<Integer> myArrayList = new ArrayList<Integer>();
+		
+		//Create another ArrayList for nasty path testing
+		List<Integer> testArray = new ArrayList<Integer>();
 		
 		System.out.println("Please enter the amount of numbers you want to store: ");
 		System.out.println("NOTE: NEEDS TO BE AT LEAST MORE THAN 500,000 NUMBERS but less than 600,000 THAT YOU WANT TO STORE.");
@@ -53,7 +54,7 @@ public class listInterface {
 		long aEnd = System.currentTimeMillis();
 		
 		//Print out the amount of time it takes to remove the first 50 elements
-		System.out.println("Amount of time to remove the first 50 elements of an array list: " + (aEnd - aStart) + " milliseconds");
+		System.out.println("Nasty Path: Amount of time to remove the first 50 elements of an array list: " + (aEnd - aStart) + " milliseconds");
 		
 		//Better code, a lot quicker in removing elements from the beginning of a list.
 		long lstart = System.currentTimeMillis();
@@ -63,42 +64,84 @@ public class listInterface {
 		long lend = System.currentTimeMillis();
 		
 		//Print out the amount of time it takes to remove the first 50 elements
-		System.out.println("Amount of time to remove the first 50 elements of a Linked list: " + (lend - lstart) + " milliseconds");
+		System.out.println("Happy Path: Amount of time to remove the first 50 elements of a Linked list: " + (lend - lstart) + " milliseconds");
 
 		//-------------adding to the ArrayList------------------//
 		System.out.println();
-		System.out.println("Adding to the ArrayList");
+		
 		
 		//Happy Path
-		myArrayList.add(400000, 5);
-		if (myArrayList.get(400000) == 5){
-			System.out.println("Addition of number " + myArrayList.get(400000) + " to index 400,000 completed successfully");
+		System.out.println("Adding to the testArray ArrayList");
+		testArray.add(1);
+		testArray.add(2);
+		testArray.add(3);
+		
+		//print out testArray
+		System.out.println("--------------------------------------------------------------------------------------");		
+		for (int i = 0; i < testArray.size(); i++){
+			System.out.println("Happy Path: Integer " + testArray.get(i) + " added to testArray");
 		}
+		System.out.println("--------------------------------------------------------------------------------------");		
+		System.out.println("--------------------------------------------------------------------------------------");
 		
-		//Nasty Path: User has to create the array size which is suppose to be less than 600000 elements. You can't add more than the size
-		//of the array
+		//Nasty Path: add element to a nonexistent index of the testArray
 		try{
-			myArrayList.add(600000, 5);
+			testArray.add(20, 20);
+		}
+		catch(Exception ex){
+			System.out.println("Nasty Path: Can't add element to a specified non-existent index");
+		}
+		System.out.println("--------------------------------------------------------------------------------------");
+		System.out.println("--------------------------------------------------------------------------------------");
 		
+		//Nasty Path: Cannot add a string to an ArrayList with type integer
+		try{
+			//testArray.add(1, "A");
+			System.out.println("Nasty Path: Cannot add a string to an ArrayList with type integer");
 		}
 		catch(Exception e){
-			System.out.println("YOU CANNOT ADD TO AN ARRAY LIST AT AN INDEX GREATER THAN THE LENGTH OF THE ARRAY");
+			System.out.println("Nasty Path: Cannot add a string to an ArrayList with type integer");
 		}
+		System.out.println("--------------------------------------------------------------------------------------");
+		System.out.println("--------------------------------------------------------------------------------------");
 		
-		// --------------------sorting the ArrayList and adding invalid types to ArrayList----------------//
-		System.out.println();
-		System.out.println("Sorting an ArrayList");
+		//Nasty Path: adding a negative index to the array
+		try{
+			testArray.add(-1,20);
+			for (int i = 0; i < testArray.size(); i++){
+				System.out.print(testArray.get(i));
+			}
+		}
+		catch(Exception e){
+			System.out.println("Nasty Path: Adding a negative index to array");
+		}
+		System.out.println("--------------------------------------------------------------------------------------");
+		System.out.println("--------------------------------------------------------------------------------------");
 		
-		//populate array
-		//Nasty Path
-		//myArrayList.add(0, "A");
+		//Nasty Path: add null to the array list
+		try{
+			testArray.add(null);
+			System.out.println("Nasty Path: Adding a null value to an array");
+		}
+		catch(Exception ex){
+			System.out.println("Nasty Path: Adding a null value to an array");
+		}
+		System.out.println("--------------------------------------------------------------------------------------");
+		System.out.println("--------------------------------------------------------------------------------------");
 		
-		//Nasty Path
-		//myArrayList.sort();
+		// Nasty Path: does not replace value at specified index, instead it adds an index and shifts elements up one
+		try{
+			testArray.add(1, 200);
+			System.out.println("Elements in array after inserting into index 1");
+			for (int i = 0; i < testArray.size(); i++){
+				System.out.println(" " + testArray.get(i));
+				}
+		}
+		catch(Exception e){
+			System.out.println("Does not work!");
+		}
+		System.out.println("--------------------------------------------------------------------------------------");
 		
-		//Happy Path
-		Collections.sort(myArrayList);
-		System.out.println("Sorted");
 	}
 
 }

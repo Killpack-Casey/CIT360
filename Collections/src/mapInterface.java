@@ -61,29 +61,67 @@ public class mapInterface {
 			System.out.println();
 			System.out.println("Testing");
 			
+			System.out.println("-------------------------------------------------------------------------------------");
 			//nasty path: Returns null because nothing has been put in for key 8
-			System.out.println(map.get(8));
-			
-			//nasty path: Hash Maps are of a certain size when created however the size can be exceeded causing an error
-			//System.out.println(map.get(10000000000));
+			try{
+				System.out.println("Nasty Path: print out element from a non-existent key in the map");
+				System.out.println(map.get(8));
+			}
+			catch (Exception ex){
+				System.out.println("Nasty Path: there is no key of 8 in the map");
+			}
+			System.out.println("-------------------------------------------------------------------------------------");
+			System.out.println("-------------------------------------------------------------------------------------");
 			
 			//nasty path: Never put null as a parameter in the hash map
-			//by default hash map is filled with null values
-			map.put(8, null);
-			System.out.println(map.get(8));
+			try {
+				System.out.println("Nasty Path: adding null as a value in the hash map");
+				map.put(6, null);
+				System.out.println(map.get(8));
+			}
+			catch(Exception ex){
+				System.out.println("Nasty Path: adding null as a value in the hash map");
+			}
+			System.out.println("-------------------------------------------------------------------------------------");
+			System.out.println("-------------------------------------------------------------------------------------");
 			
-			//nasty path: Cannot put an Integer in for the value parameter of a hashmap
-			//map.put(8, 8);
+			//nasty path: adding a null key to the hash map
+			try {
+				System.out.println("Nasty Path: adding a null key to the hash map");
+				map.put(null, "Test");
+				System.out.println("Grab value from the null key. The value is: " + map.get(null));
+				System.out.println("Works, but not goot to do");
+			}
+			catch(Exception ex){
+				System.out.println("Nasty Path: adding a null key to the hash map");
+			}
+			System.out.println("-------------------------------------------------------------------------------------");
+			System.out.println("-------------------------------------------------------------------------------------");
+			
+			//nasty path: Cannot put an Integer in for the value parameter of a hashmap that has string values
+			try {
+				//map.put(7, 7);
+				System.out.println("Nasty Path: Cannot put an Integer in for the value parameter of a hashmap that has string values");
+			}
+			catch(Exception ex){
+				System.out.println("Nasty Path: Cannot put an Integer in for the value parameter of a hashmap that has string values");
+			}
+			System.out.println("-------------------------------------------------------------------------------------");
+			System.out.println("-------------------------------------------------------------------------------------");
 			
 			//nasty path: Hash Map does not do duplicate keys
-			map.put(6, "Test1");
-			map.put(6, "Test2");
-			map.put(6, "Test3");
-			System.out.println(map.get(6));
+			try {
+				map.put(9, "Test1");
+				map.put(9, "Test2");
+				map.put(9, "Test3");
+				System.out.println("Nasty Path: Hash Map does not do duplicate keys");
+				System.out.println("Value after adding three values of the same key: " + map.get(9));
+			}
+			catch(Exception ex){
+				System.out.println("Nasty Path: Hash Map does not do duplicate keys");
+			}
+			System.out.println("-------------------------------------------------------------------------------------");
+			System.out.println("-------------------------------------------------------------------------------------");
 			
 		}
-		
-		
-
-
 }
