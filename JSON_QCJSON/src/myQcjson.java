@@ -11,10 +11,12 @@ import java.util.Scanner;
 public class myQcjson implements Serializable {
 
 //qcjson another way to manipulate json data to java
+    //assign values to variables
     String firstName = "Object-Santa";
     String lastName = "Object-Claus";
     int age = 0;
 
+    //constructor allows to change the age variable
     public myQcjson(int a){
 
         this.age = a;
@@ -38,12 +40,6 @@ public class myQcjson implements Serializable {
         myArray.add(0, obj);
         myArray.add(1, object);
 
-        //jsoninputstream reads file
-        //jsonoutpstream reads or writes out to file
-        //nasty path trying to read or write to files you have no permission to
-        //nasty path reading an image file
-        //nasty path trying to read a file with nothing in it null file
-
         //create file for my valid json
         File file = new File("QCJSON_Valid.txt");
 
@@ -59,18 +55,27 @@ public class myQcjson implements Serializable {
             FileOutputStream badFileOut = new FileOutputStream(badFile);
 
             //nasty path: PrintWriter does not work with a file created from the FileOutputStream
-            PrintWriter writer = new PrintWriter(file);
-
-            //nasty path: This will write nothing to the file
-            writer.print(object);
-            //nasty path: This will write nothing to the file
-            writer.print(obj);
+            try {
+                PrintWriter writer = new PrintWriter(file);
+                //nasty path: This will write nothing to the file
+                writer.print(object);
+                //nasty path: This will write nothing to the file
+                writer.print(obj);
+                System.out.println("Nasty Path: Cannot use PrintWriter to print to file when using FileOutputStream");
+                System.out.println("Nothing wrote to file");
+            }catch(Exception ex){
+                System.out.println("Nasty Path: Cannot use PrintWriter to print to file when using FileOutputStream");
+                System.out.println("Nothing wrote to file");
+            }
+            System.out.println("------------------------------------------------------------------");
 
             //happy path: this is similar to creating a printWriter, but is used when creating a file
             //from the FileOutputStream class
             JSONOutputStream jsonOut = new JSONOutputStream(fileOut);
             //for the invalid json
             JSONOutputStream badJsonOut = new JSONOutputStream(badFileOut);
+            System.out.println("Happy Path: By using JSONOutputStream we can now write to file successfully");
+            System.out.println("------------------------------------------------------------------");
 
             try {
                 //nasty path: invalid json
@@ -78,11 +83,15 @@ public class myQcjson implements Serializable {
                 badJsonOut.writeObject(obj);
                 //prints another object to file in json
                 badJsonOut.writeObject(object);
+                System.out.println("Nasty Path: Invalid JSON wrote to file. Need to nest JSONObjects in" +
+                        " an array");
 
                 //happy path: The two objects need to be nested in an array and can't be wrote seperately to a file,
                 //like the above nasty path example otherwise it is not valid json and you will have a hard time reading
                 // in the JSON data
                 jsonOut.writeObject(myArray);
+                System.out.println("Happy Path: Valid JSON wrote to file");
+
                 //close the file write
                 jsonOut.close();
 
@@ -95,6 +104,7 @@ public class myQcjson implements Serializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        System.out.println("------------------------------------------------------------------");
 
         //read json file into java
         try {
@@ -111,28 +121,37 @@ public class myQcjson implements Serializable {
             contain = (ArrayList) readIn.readObject();
 
             //nasty path: you can not access the key value pairs if you stick the JSON Object in an object
-            Object containObject = contain.get(1);
-            containObject = contain.get(1);
-            //nasty path
-            System.out.println("Nasty Path");
-            System.out.println("Prints the contents of the object after assigning the second object of the array " +
-                    "in index 1 to it ");
-            System.out.println(containObject.toString());
+            try {
+                Object containObject = contain.get(1);
+                containObject = contain.get(1);
+                //nasty path
+                //System.out.println(containObject.age);
+                //System.out.println(containObject.get("age"));
+                System.out.println("Nasty Path: Assign the second object in the array to an object");
+                System.out.println("We cannot access the key value pairs, need to use a hash map, not assign" +
+                        "it to an object");
+            }catch(Exception ex){
+                System.out.println("Nasty Path: Assign the second object in the array to an object");
+                System.out.println("We cannot access the key value pairs, need to use a hash map, not assign" +
+                        "it to an object");
+            }
             System.out.println("-----------------------------------------------------------------");
 
-            //nasty path: won't cast to myQcjson object
-            //myQcjson containObj = new myQcjson(0);
-            //containObj = (myQcjson) contain.get(0);
-
-            //nasty path: You will get an error saying cannot cast to HashMap
-            //System.out.println("Grabs index 0 in JSONARRAY " + containObj.firstName);
-
             System.out.println("Reading out obj in Java from JSON");
+            System.out.println("-----------------------------------------------------------------");
             //happy path: read obj from the file
             //you want to put your json objects in a hash map because the JSONObject has key value pairs
             HashMap map = (HashMap) contain.get(0);
-            //nasty path: You cannot use int throws an error
-            //int age = (int) map.get("age");
+
+            try {
+                //nasty path: You cannot use int throws an error
+                int age = (int) map.get("age");
+            }catch(Exception ex){
+                System.out.println("Nasty Path: Cannot cast to an int, need to use long");
+            }
+            System.out.println("-----------------------------------------------------------------");
+
+            System.out.println("Happy Path: Display QCJSON from first object called obj into java");
             long age = (long) map.get("age");
             String first = (String) map.get("firstName");
             String last = (String) map.get("lastName");
@@ -141,11 +160,9 @@ public class myQcjson implements Serializable {
             System.out.println("obj-age: " + age);
             System.out.println("-----------------------------------------------------------------");
 
-            System.out.println("Reading out Object in Java from JSON");
+            System.out.println("Happy Path: Display QCJSON from second object called object into java");
             //happy path: read object from the file
             HashMap map2 = (HashMap) contain.get(1);
-            //nasty path: You cannot use int throws an error
-            //int age2 = (int) map2.get("age");
             long age2 = (long) map2.get("age");
             String first2 = (String) map2.get("firstName");
             String last2 = (String) map2.get("lastName");
@@ -154,14 +171,17 @@ public class myQcjson implements Serializable {
             System.out.println("object-age: " + age2);
             System.out.println("-----------------------------------------------------------------");
 
-            System.out.println("Convert obj back to json using the stringify method");
+            System.out.println("Happy Path: Convert obj back to json using the stringify method");
             //stringify method converts an object back to json. It's very helpful because instead of using the string builder
             //you can use stringify to build your strings
-            String combine = JSONUtilities.stringify((Serializable) contain.get(0));
-            System.out.println(combine);
-            //not json
-            System.out.println(contain.get(0));
 
+            //not json
+            System.out.println("This is not JSON: " + contain.get(0));
+
+            String combine = JSONUtilities.stringify((Serializable) contain.get(0));
+            System.out.println("This is JSON after using stringify method: " + combine);
+
+            //close
             readIn.close();
 
         } catch (FileNotFoundException e) {
@@ -173,5 +193,48 @@ public class myQcjson implements Serializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        System.out.println("-----------------------------------------------------------------");
+
+        //Stringify testing
+        String value1 = "value1";
+        String value2 = "";
+        String value3 = "value3";
+        HashMap testMap = new HashMap();
+        testMap.put("test1", value1);
+        testMap.put("test2", "");
+        testMap.put("test3", value3);
+
+        //Nasty Path: stringify HashMap that has a blank string for one of the key value pairs
+        try {
+            String hash = JSONUtilities.stringify(testMap);
+            System.out.println("Nasty Path: stringify HashMap that has a blank string for one of the key value pairs");
+            System.out.println(hash);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        System.out.println("-----------------------------------------------------------------");
+
+        //Nasty Path: Pass null to the stringify method
+        String testNull = null;
+        try {
+            String hash = JSONUtilities.stringify(testNull);
+            System.out.println("Nasty Path: Pass null to the stringify method");
+            System.out.println(hash);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        System.out.println("-----------------------------------------------------------------");
+
+        //Nasty Path: Pass null within the parameter of the stringify method
+        try {
+            String hash = JSONUtilities.stringify(null);
+            System.out.println("Nasty Path: Pass null within the parameter of the stringify method");
+            System.out.println(hash);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        System.out.println("-----------------------------------------------------------------");
+        
     }
 }
+
