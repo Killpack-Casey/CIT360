@@ -1,5 +1,6 @@
 package org.Killpack.java.dto;
 
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -46,18 +47,37 @@ public class ServlettExample<JSONInputStream> extends HttpServlet {
 	//make request to get my json and store it in string
 	String myJson = request.getParameter("json");
 	
-	//request to get json store it in string variable
-	String dataDb = request.getParameter("jsonCustomer");
+	//Create json object and json parser
+	JSONObject object = new JSONObject();
+	JSONParser parse = new JSONParser();
 	
-	String root = jsonParse.json(myJson);
-	System.out.println(root);
-	long id = jsonParse.dbJsonId(dataDb);
-	String firstName = jsonParse.dbJsonFirst(dataDb);
-	String lastName = jsonParse.dbJsonLast(dataDb);
-	long phoneNumber = jsonParse.dbJsonPhone(dataDb);
-	System.out.println(id);
+	//declare variables
+	long id = 0;
+	String firstName = null;
+	String lastName = null;
+	long phoneNumber;
 	
-	
+	try {
+		//parse the json to a JSONObject
+		object = (JSONObject) parse.parse(myJson);
+		
+		//Grab the value from the root key
+		String root = (String) object.get("root");
+		
+//----------JSON TO BE STORED IN DATABASE---------------------------------------//
+		
+		//request to get json store it in string variable
+		String dataDb = request.getParameter("jsonCustomer");
+		
+		//create JSONObject
+		JSONObject object1 = new JSONObject();
+		//parse json string to JSONObject
+		object1 = (JSONObject) parse.parse(dataDb);
+		//grab values from JSON keys and store them in variables
+		id = (long) object1.get("id");
+		firstName = (String) object1.get("firstName");
+		lastName = (String) object1.get("lastName");
+		phoneNumber = (long) object1.get("phoneNumber");
 		//Print to servlet values of the json
 		writer.println("value from the doGet method JSON: " + root);
 		writer.println();
@@ -65,14 +85,70 @@ public class ServlettExample<JSONInputStream> extends HttpServlet {
 		writer.println("CustomerDetails first_name: " + firstName); 
 		writer.println("CustomerDetails last_name: " + lastName);
 		writer.println("CustomerDetails phone_number: " + phoneNumber);
+				
+	} catch (ParseException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+
+	//------------------------------------------Set up database to use-------------------------------------------------//
+	// JDBC driver name and database URL
+    final String JDBC_DRIVER="com.mysql.jdbc.Driver";  
+    final String DB_URL="jdbc:mysql://localhost:3306/Customer?useSSL=false";
+
+    //  Database credentials
+    final String USER = "hbstudent";
+    final String PASS = "hbstudent";
+  
+    //Cast to integer (needs to be the same type as the database type)
+    int customerId = (int) id;
+    int phoneNum = (int) id;
+    try{
+    // Register JDBC driver
+    Class.forName("com.mysql.jdbc.Driver");
+
+    // Open a connection
+    Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+    
+    //create sessionFactory
+    SessionFactory sessionFactory = 
+    		new Configuration().configure("hibernate.cfg.xml").addAnnotatedClass(CustomerDetails.class).buildSessionFactory();
+    
+    //Open new session of the sessionFactory object
+    Session session = sessionFactory.getCurrentSession();
+  	session = sessionFactory.getCurrentSession();
+	session.beginTransaction();
+    
+	//create object from CustomerDetails class and set its attributes
+    CustomerDetails customer = new CustomerDetails();
+	customer.setId(customerId);
+	customer.setFirstName(firstName);
+	customer.setLastName(lastName);
+	customer.setNumber(phoneNum);
+	
+	//Save the customer object to database
+	session.save(customer);
+	
+	//Need to commit and close transaction
+	session.getTransaction().commit();
+			
+		}
+
+		catch (HibernateException exception) {
+			System.out.println("Problem creating session factory");
+			exception.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+		}
+
 		writer.flush();
 		writer.close();
-		
-	updateDb.database(id, lastName, lastName, phoneNumber);	
-		
-		
 	}
-			
+		
 		//Post method to pass parameters
 		//to create a post request we need an html form (dataFile.html)
 		protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
