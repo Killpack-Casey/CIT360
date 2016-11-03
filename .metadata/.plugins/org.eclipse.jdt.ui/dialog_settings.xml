@@ -2,6 +2,16 @@
 <section name="Workbench">
 	<item value="C:\Users\Casey\Downloads" key="org.eclipse.jdt.ui.lastextjar"/>
 	<item value="480,510" key="UserLibraryLoadSaveDialog.size"/>
+	<section name="RefactoringWizard.preview">
+		<item value="600" key="width"/>
+		<item value="400" key="height"/>
+	</section>
+	<section name="org.eclipse.ltk.ui.refactoring.settings">
+		<item value="false" key="renameSubpackages"/>
+		<item value="false" key="updateQualifiedNames"/>
+		<item value="*" key="patterns"/>
+		<item value="false" key="updateTextualMatches"/>
+	</section>
 	<section name="NewClassWizardPage">
 		<item value="false" key="create_constructor"/>
 		<item value="true" key="create_unimplemented"/>
