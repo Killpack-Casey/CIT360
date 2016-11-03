@@ -21,4 +21,15 @@
         android:maxLines = "100"
         android:scrollbars = "vertical"/>
 
+    <ProgressBar
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="32dp"
+        android:layout_below="@+id/text"
+        android:layout_centerHorizontal="true"
+        android:max="100"
+        android:progress="0"
+        android:id="@+id/progressBar3" />
+
 </RelativeLayout>

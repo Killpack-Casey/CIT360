@@ -29,8 +29,6 @@ public class myExecutor {
 		fixService.execute(new execRunnable());
 		fixService.execute(new execRunnable());
 		
-		//Nasty Path: Would be to not shutdown executor service
-		
 		//if you don't shutdown your executor service it will create a memory leak in your application
 		fixService.shutdown();
 		

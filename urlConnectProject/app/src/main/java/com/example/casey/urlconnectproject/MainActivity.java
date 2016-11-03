@@ -1,31 +1,36 @@
-        package com.example.casey.urlconnectproject;
-        import android.support.v7.app.AppCompatActivity;
-        import android.os.Bundle;
-        import android.view.Menu;
-        import android.view.MenuItem;
-        import android.view.View;
-        import android.widget.Button;
-        import android.widget.EditText;
-        import android.widget.TextView;
+package com.example.casey.urlconnectproject;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 
-        import java.io.BufferedReader;
-        import java.io.IOException;
-        import java.io.InputStream;
-        import java.io.InputStreamReader;
-        import java.lang.ref.WeakReference;
-        import java.net.HttpURLConnection;
-        import java.net.MalformedURLException;
-        import java.net.URL;
-        import java.util.logging.Handler;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.lang.ref.WeakReference;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.logging.Handler;
 
-        import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.HttpsURLConnection;
 
 
 public class MainActivity extends AppCompatActivity {
 
     Button urlButton;
     static TextView text;
+    static int progress;
+    ProgressBar progressBar;
+    int progressStatus = 0;
+    android.os.Handler handler = new android.os.Handler();
 
 
     @Override
@@ -37,6 +42,45 @@ public class MainActivity extends AppCompatActivity {
 
         urlButton = (Button) findViewById(R.id.btn);
         text = (TextView) findViewById(R.id.text);
+
+        //Create a progress bar using the android handler
+        progress = 0;
+        progressBar = (ProgressBar) findViewById(R.id.progressBar3);
+        progressBar.setMax(200);
+
+        //create seperate thread
+        new Thread(new Runnable()
+        {
+            public void run()
+            {
+                //while the progress bar is less than a hundred we will need to increment it
+                while (progressStatus < 100){
+                    //method increments progress each time
+                    progressStatus = doSomeWork();
+                    //post a new runnable to the handler to update progress bar status
+                    handler.post(new Runnable() {
+                        public void run() {
+                            progressBar.setProgress(progressStatus);
+                        }
+                    });
+                }
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressBar.setVisibility(View.GONE);
+                    }
+                });
+            }
+            //method to increment progress bar
+            private int doSomeWork(){
+                try{
+                    Thread.sleep(500);
+                } catch (InterruptedException e){
+                    e.printStackTrace();
+                }
+                return ++progress;
+            }
+        }).start();
 
         //Nasty Path: Opening HTTP URL connection on the main thread. This can cause an
         //application to freeze or lock up.
